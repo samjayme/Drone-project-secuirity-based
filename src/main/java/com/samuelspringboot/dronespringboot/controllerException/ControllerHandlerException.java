@@ -15,28 +15,28 @@ import java.util.Map;
 public class ControllerHandlerException {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleInvalidArgument( MethodArgumentNotValidException ex){
+    public Map<String, String> handleInvalidArgument(MethodArgumentNotValidException ex) {
         Map<String, String> errorMap = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(fieldError -> {
-            errorMap.put(fieldError.getField(),fieldError.getDefaultMessage());
+            errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
         });
         return errorMap;
 
     }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(DroneNotAvailableException.class)
-    public  Map<String, String> handleDroneNotFoundException(DroneNotAvailableException ex){
-        Map<String,String> errorMap = new HashMap<>();
-        errorMap.put("errorMessage",ex.getMessage());
-        return errorMap;
-    }
-    @ResponseStatus(HttpStatus.ALREADY_REPORTED)
-    @ExceptionHandler(DroneLimitExceededException.class)
-    public Map<String,String> handleDroneLimitExceededException(DroneLimitExceededException ex){
-        Map<String,String> errorMap = new HashMap<>();
+    public Map<String, String> handleDroneNotFoundException(DroneNotAvailableException ex) {
+        Map<String, String> errorMap = new HashMap<>();
         errorMap.put("errorMessage", ex.getMessage());
         return errorMap;
     }
 
-
+    @ResponseStatus(HttpStatus.ALREADY_REPORTED)
+    @ExceptionHandler(DroneLimitExceededException.class)
+    public Map<String, String> handleDroneLimitExceededException(DroneLimitExceededException ex) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("errorMessage", ex.getMessage());
+        return errorMap;
+    }
 }

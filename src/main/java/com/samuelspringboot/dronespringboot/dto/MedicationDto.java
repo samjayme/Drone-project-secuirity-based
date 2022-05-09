@@ -5,11 +5,12 @@ import javax.validation.constraints.Pattern;
 public class MedicationDto {
 
 
-    @Pattern(regexp ="[a-zA-Z_0-9-]",message = "only letters ,_,- allowed")
+    @Pattern(regexp ="^[a-zA-Z]+[a-zA-Z0-9-_ ]*[a-zA-Z0-9]$",
+            message = "only letters ,numbers,hyphen,underscore is  allowed(underscore and hyphen can only be in the middle")
     private String name;
     private Long weight;
-    @Pattern(regexp = "[A-Z_0-9]",
-    message = "Only uppercase letters numbers and underscore is allowed")
+    @Pattern(regexp = "^[A-Z]+[A-Z0-9_ ]*[A-Z0-9]$",
+    message = "Only uppercase letters numbers and underscore is allowed(underscore can only be in the middle)")
     private String code;
     private  String image;
 

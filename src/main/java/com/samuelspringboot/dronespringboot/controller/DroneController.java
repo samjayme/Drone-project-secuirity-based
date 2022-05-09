@@ -2,9 +2,12 @@ package com.samuelspringboot.dronespringboot.controller;
 
 import com.samuelspringboot.dronespringboot.dto.DroneDto;
 import com.samuelspringboot.dronespringboot.entity.Drone;
+import com.samuelspringboot.dronespringboot.entity.Medication;
 import com.samuelspringboot.dronespringboot.service.DroneService;
 import com.samuelspringboot.dronespringboot.serviceException.DroneLimitExceededException;
 import com.samuelspringboot.dronespringboot.serviceException.DroneNotAvailableException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,38 +18,65 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestMapping("/Drone")
 public class DroneController {
+    private static final Logger log = LoggerFactory.getLogger(DroneController.class);
 
     @Autowired
     private DroneService droneService;
 
-    @PostMapping("/Drones/register")
+    // Register a new drone
+    @PostMapping("/register")
     public ResponseEntity<Drone> registerDrone(@Valid @RequestBody DroneDto droneDto)  {
+        log.info("Registering Drone");
         return  new ResponseEntity<>(droneService.registerDrone(droneDto), HttpStatus.CREATED);
+
+
     }
 
 
 
 
-    @PostMapping("/loadDroneWithMed/{Id}")
-    public ResponseEntity<Drone> loadDroneWithMedication(@PathVariable("Id") Long Id ,@RequestBody List<Long> medicationId ) throws DroneNotAvailableException, DroneLimitExceededException {
-        return  new ResponseEntity<>(droneService.loadDroneWithMed(Id,medicationId),HttpStatus.ACCEPTED);
+    // For loading Drone with medication using the Drone Id
+    @PostMapping("/loadDroneWithMedication")
+    public ResponseEntity<Drone> loadDroneWithMedication(@RequestParam("serialNumber") String serialNumber,@RequestBody List<Long> medicationId ) throws DroneNotAvailableException, DroneLimitExceededException {
+       log.info("Loading Drone with Medication");
+        return  new ResponseEntity<>(droneService.loadDroneWithMed(serialNumber,medicationId),HttpStatus.ACCEPTED);
     }
+
+    // For getting all Drones
     @GetMapping("/findAllDrone")
     public List<Drone> findAllDrone(){
         return droneService.findAllDrone();
     }
-    @GetMapping("/checkBattery/{id}")
-    public Long getBateryPercentage(@PathVariable("id") Long id) throws DroneNotAvailableException {
-        return droneService.checkBatteryPercentage(id);
+
+
+
+    // For checking Drone batteryPercent using Drone Id
+    @GetMapping("/checkBattery")
+    public Long getBateryPercentage(@RequestParam("Id") Long Id) throws DroneNotAvailableException {
+        log.info("Checking batteryPercent");
+        return droneService.checkBatteryPercentage(Id);
     }
 
-    @GetMapping("/checkLoadedItems/{Id}")
-    public ResponseEntity<Drone> checkLoadedItems(@PathVariable("Id") Long Id) throws DroneNotAvailableException {
+    // For check loading items in each Drone using Drone Id
+    @GetMapping("/checkLoadedItems")
+    public ResponseEntity<Drone > checkLoadedItems(@RequestParam("Id") Long Id) throws DroneNotAvailableException {
+        log.info("Checking loaded items for a Drone");
         return new ResponseEntity<>(droneService.checkLoadedItems(Id),HttpStatus.OK);
     }
-    @GetMapping("/checkAvaliableDrone")
+
+    // For checking Drones available for loading
+    @GetMapping("/checkAvailableDrone")
     public ResponseEntity<List<Drone>> checkAvaliableDrone(){
+        log.info("Getting available Drones for loading");
         return new ResponseEntity<>(droneService.getAvailableDrone(),HttpStatus.OK);
+    }
+
+    // for checking loaded medications in drone by serialnumber
+    @GetMapping("/checkLoadedMedications")
+    public ResponseEntity<List<Medication>> checkLoadedMedications(@RequestParam ("serialNumber")String serialNumber) throws DroneNotAvailableException {
+        log.info("checking loaded medications in drone");
+        return new ResponseEntity<>(droneService.checkLoadedMedications(serialNumber),HttpStatus.OK);
     }
 }

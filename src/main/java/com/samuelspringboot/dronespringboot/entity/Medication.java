@@ -1,9 +1,7 @@
 package com.samuelspringboot.dronespringboot.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
-import javax.validation.constraints.Pattern;
 
 @Entity
 public class Medication {
@@ -12,13 +10,8 @@ public class Medication {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
-
-    //@Pattern(regexp = "[a-zA-Z0-9](?=.*[-_])",
-           // message = "name must contain at least 1 uppercase, 1 lowercase, 1 special character and 1 digit ")
     private String name;
     private Long weight;
-    //@Pattern(regexp ="(?=.*[A-Z](?=.*[0-9]) (?=.*[-_] ))",  //"[A-Z0-9_.]*",
-           // message = "only uppercase letters,underscore and number is allowed".
     private String code;
     private  String image;
 

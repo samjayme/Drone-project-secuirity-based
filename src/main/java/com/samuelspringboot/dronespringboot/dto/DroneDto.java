@@ -9,14 +9,17 @@ public class DroneDto {
 
     @Size(max = 100, message = "Should not be more than 100 characters")
     @NotBlank(message = "serialNumber cannot be blank")
+
+    @NotBlank(message = "serialNumber cannot be blank")
     private String serialNumber;
 
     private  String model;
     @Max(value = 500, message = "should not be more than 500grm")
     private Long weightLimit;
 
+    @Max(value = 100 ,message = "Battery percentage should not exceed 100")
     private Long batteryPercentage;
-    @NotBlank
+    @NotBlank(message = "Drone state cannot be blank")
     private String state;
 
 

@@ -19,7 +19,7 @@ public class MedicationController {
     MedictionService medictionService;
 
     @PostMapping("/medication/saveMedication")
-    public ResponseEntity<Medication> saveMediction(@Valid @RequestBody MedicationDto medicationDto) {
+    public ResponseEntity<Medication> saveMedication(@Valid @RequestBody MedicationDto medicationDto) {
         return new ResponseEntity<>(medictionService.saveMedication(medicationDto), HttpStatus.CREATED);
     }
 }
