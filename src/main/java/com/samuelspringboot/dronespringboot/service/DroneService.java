@@ -5,7 +5,7 @@ import com.samuelspringboot.dronespringboot.entity.Drone;
 import com.samuelspringboot.dronespringboot.entity.Medication;
 import com.samuelspringboot.dronespringboot.serviceException.DroneLimitExceededException;
 import com.samuelspringboot.dronespringboot.serviceException.DroneNotAvailableException;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Page;
 
 
 import java.util.List;
@@ -19,12 +19,17 @@ public interface DroneService {
 
     List<Drone> findAllDrone();
 
+    Page<Drone> findAllDroneWithPagination(int offSet, int pageSize);
+    Page<Drone> findAllDroneWithPaginationAndSorting(int offSet, int pageSize, String sortBy);
+
 
     List<Drone> getAvailableDrone();
-
+    List<Drone> getAvailableDroneSorted(String sortBy);
     Long checkBatteryPercentage(Long id) throws DroneNotAvailableException;
 
     Drone checkLoadedItems(Long droneId) throws DroneNotAvailableException;
+
+
 
 
     // GETTING DRONES BY MODEL

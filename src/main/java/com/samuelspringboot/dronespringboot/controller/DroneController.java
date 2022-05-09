@@ -9,6 +9,7 @@ import com.samuelspringboot.dronespringboot.serviceException.DroneNotAvailableEx
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -73,10 +74,33 @@ public class DroneController {
         return new ResponseEntity<>(droneService.getAvailableDrone(),HttpStatus.OK);
     }
 
+    // for getting available drones sorted
+    @GetMapping("/checkAvailableDroneSorted")
+    public ResponseEntity<List<Drone>> checkAvailableDrone(@RequestParam("sortBy" ) String sortBy){
+        log.info("Getting available Drones for loading");
+        return new ResponseEntity<>(droneService.getAvailableDroneSorted(sortBy),HttpStatus.OK);
+    }
+
     // for checking loaded medications in drone by serialnumber
     @GetMapping("/checkLoadedMedications")
     public ResponseEntity<List<Medication>> checkLoadedMedications(@RequestParam ("serialNumber")String serialNumber) throws DroneNotAvailableException {
         log.info("checking loaded medications in drone");
         return new ResponseEntity<>(droneService.checkLoadedMedications(serialNumber),HttpStatus.OK);
+    }
+
+    // for getting all drones by pages
+    @GetMapping("/getAllDronesByPage")
+    public ResponseEntity<Page<Drone>> getAllDronesByPages(@RequestParam("offSet") int offSet, @RequestParam("pageSize") int pageSize){
+        return new ResponseEntity<>(droneService.findAllDroneWithPagination(offSet,pageSize), HttpStatus.OK);
+    }
+    // for getting all drones sorted  and by pages
+    @GetMapping("/getAllDronesByPageSorted")
+    public ResponseEntity<Page<Drone>> getAllDronesByPagesWithSort(
+            @RequestParam("offSet") int offSet,
+            @RequestParam("pageSize") int pageSze,
+            @RequestParam("sortBy") String sortBy
+            ){
+        log.info("getting all drones sorted and by pages");
+        return new ResponseEntity<>(droneService.findAllDroneWithPaginationAndSorting(offSet,pageSze,sortBy), HttpStatus.OK);
     }
 }

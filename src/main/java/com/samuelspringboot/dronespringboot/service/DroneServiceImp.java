@@ -8,6 +8,9 @@ import com.samuelspringboot.dronespringboot.repository.MedicationRepository;
 import com.samuelspringboot.dronespringboot.serviceException.DroneLimitExceededException;
 import com.samuelspringboot.dronespringboot.serviceException.DroneNotAvailableException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -79,6 +82,18 @@ public class DroneServiceImp implements DroneService {
         return new ArrayList<>(dronerepository.findAll());
     }
 
+    // GETTING ALL DRONES BY PAGE
+    @Override
+    public Page<Drone> findAllDroneWithPagination(int offSet, int pageSize) {
+        return dronerepository.findAll(PageRequest.of(offSet,pageSize));
+    }
+
+    // GETTING ALL DRONES SORTED BY PAGE
+    @Override
+    public Page<Drone> findAllDroneWithPaginationAndSorting(int offSet, int pageSize, String sortBy) {
+        return dronerepository.findAll(PageRequest.of(offSet,pageSize).withSort(Sort.Direction.DESC,sortBy));
+    }
+
     // GETTING DRONES AVAILABLE FOR LOADING
     @Override
     public List<Drone> getAvailableDrone() {
@@ -86,6 +101,12 @@ public class DroneServiceImp implements DroneService {
 
         return drone.stream()
                 .filter(d -> d.getBatteryPercentage() > batteryLimit && d.getState().equals(stateForLoading)).collect(Collectors.toList());
+    }
+
+    // GETTING AVAILABLE DRONES SORTED
+    @Override
+    public List<Drone> getAvailableDroneSorted(String sortBy) {
+        return dronerepository.findAll(Sort.by(Sort.Direction.DESC,sortBy));
     }
 
 
@@ -110,6 +131,8 @@ public class DroneServiceImp implements DroneService {
 
         return drone;
     }
+
+    // CHECK LOADED ITEMS BY SERIAL NUMBER
 
     @Override
     public List<Medication> checkLoadedMedications(String serialNumber) throws DroneNotAvailableException {
