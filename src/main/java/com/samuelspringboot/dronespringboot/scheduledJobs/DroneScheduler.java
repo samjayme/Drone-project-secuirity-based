@@ -21,7 +21,7 @@ public class DroneScheduler {
     private static final Logger log = LoggerFactory.getLogger(DroneScheduler.class);
 
 
-    @Scheduled(cron= "0 0/2 * * * *")
+    @Scheduled(cron= "0 0/60 * * * *")
     @Async
     public void CheckAllDroneBatteryPercent(){
 

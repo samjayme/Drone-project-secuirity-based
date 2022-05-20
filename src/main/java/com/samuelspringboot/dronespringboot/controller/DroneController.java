@@ -1,5 +1,4 @@
 package com.samuelspringboot.dronespringboot.controller;
-
 import com.samuelspringboot.dronespringboot.dto.DroneDto;
 import com.samuelspringboot.dronespringboot.entity.Drone;
 import com.samuelspringboot.dronespringboot.entity.Medication;
@@ -13,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -55,16 +55,16 @@ public class DroneController {
 
     // For checking Drone batteryPercent using Drone Id
     @GetMapping("/checkBattery")
-    public Long getBateryPercentage(@RequestParam("Id") Long Id) throws DroneNotAvailableException {
+    public Long getBatteryPercentage(@RequestParam("Id") Long Id) throws DroneNotAvailableException {
         log.info("Checking batteryPercent");
         return droneService.checkBatteryPercentage(Id);
     }
 
     // For check loading items in each Drone using Drone Id
     @GetMapping("/checkLoadedItems")
-    public ResponseEntity<Drone > checkLoadedItems(@RequestParam("Id") Long Id) throws DroneNotAvailableException {
+    public ResponseEntity<List<Medication>> checkLoadedItems(@RequestParam("serialNumber") String serialNumber) throws DroneNotAvailableException {
         log.info("Checking loaded items for a Drone");
-        return new ResponseEntity<>(droneService.checkLoadedItems(Id),HttpStatus.OK);
+        return new ResponseEntity<>(droneService.checkLoadedMedications(serialNumber),HttpStatus.OK);
     }
 
     // For checking Drones available for loading

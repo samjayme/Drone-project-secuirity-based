@@ -47,21 +47,17 @@ public class DroneServiceImp implements DroneService {
     // LOADING DRONE WITH MEDICATION/S
     @Override
     public Drone loadDroneWithMed(String serialNumber, List<Long> medicationId) throws DroneNotAvailableException, DroneLimitExceededException {
-        Drone drone = dronerepository.findBySerialNumber(serialNumber);
-        if (serialNumber==null){
-            throw new DroneNotAvailableException("Drone NOT AVAILABLE FOR LOADING");
-        }
+        Drone drone = dronerepository.findAll().stream().filter(drone1 -> drone1.getSerialNumber().equals(serialNumber))
+                .findAny().orElseThrow(()-> new DroneNotAvailableException("Drone NOT AVAILABLE FOR LOADING"));
         Long droneLimit = drone.getWeightLimit();
         String droneState = drone.getState();
         if (drone.getBatteryPercentage() < batteryLimit) {
             throw new RuntimeException("Drone battery is too low for loading");
+        }
 
-        }
         List<Medication> medications = (medicationRepository.findAllById(medicationId));
-        Long medicationWeight=0L;
-        for (Medication med : medications) {
-          medicationWeight += med.getWeight();
-        }
+        long medicationWeight=medications.stream().map(medication -> medication.getWeight()).mapToLong(i->i).sum();
+
         if (medicationWeight > droneLimit) {
             throw new DroneLimitExceededException("Drone with serialNumber: " + serialNumber + " " + "can only carry :"
                     + droneLimit + "gram" + " " + "Of medication"
@@ -120,29 +116,15 @@ public class DroneServiceImp implements DroneService {
         return drone.getBatteryPercentage();
     }
 
-    // CHECKING LOADED ITEMS FOR EACH DRONE USING DRONE ID
-    @Override
-    public Drone checkLoadedItems(Long droneId) throws DroneNotAvailableException {
-
-        Drone drone = dronerepository.findById(droneId).orElseThrow(() -> new DroneNotAvailableException("drone with "
-                + " " + droneId + " " + " not available"));
-        List<Medication> listOfloadedMedication = new ArrayList<>(drone.getMedicationList());
-
-
-        return drone;
-    }
-
     // CHECK LOADED ITEMS BY SERIAL NUMBER
 
     @Override
     public List<Medication> checkLoadedMedications(String serialNumber) throws DroneNotAvailableException {
-        Drone drone = dronerepository.findBySerialNumber(serialNumber);
-        if (serialNumber==null){
-            throw new DroneNotAvailableException("Drone "+ " " +serialNumber +" "+ "not available");
+        Drone drone = dronerepository.findAll().stream().filter(drone1 -> drone1.getSerialNumber().equals(serialNumber))
+                .findAny().orElseThrow(()-> new  DroneNotAvailableException("Drone "+ " " +serialNumber +" "+ "not available"));
 
-        }else {
-            return drone.getMedicationList();
-        }
+        List<Medication> listOfLoadedMedication = new ArrayList<>(drone.getMedicationList());;
+        return listOfLoadedMedication;
 
     }
 
@@ -151,7 +133,7 @@ public class DroneServiceImp implements DroneService {
 
     // GETTING DRONES BY MODEL
     @Override
-    public List<String> findDroneModel(String model) {
+    public List<String> findDroneModel() {
         List<Drone> droneList = dronerepository.findAll();
        return droneList.stream().map(drone -> drone.getModel()).toList();
     }
