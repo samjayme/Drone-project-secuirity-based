@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -43,11 +44,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/v3/api-docs/**","/Drone/v3/api-docs/swagger-config ","/swagger-ui.html","/swagger-ui/**");
+    }
+
+    @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors();
         httpSecurity.csrf().disable()
                 .authorizeRequests()
-                 .antMatchers(HttpMethod.POST,"/authenticate","/User/registerNewUser") .permitAll()
+                 .antMatchers(HttpMethod.POST,"/login","/User/registerNewUser") .permitAll()
                 .antMatchers(HttpMethod.POST,"/Drone/register/SignUpAdmin").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET,"Drone//loadDroneWithMedication").hasRole("USER")
                 .antMatchers("/checkBattery/checkLoadedItems//checkAvailableDrone/checkAvailableDroneSorted" +

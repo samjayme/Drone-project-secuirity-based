@@ -32,7 +32,7 @@ public class ControllerHandlerException {
         return errorMap;
     }
 
-    @ResponseStatus(HttpStatus.ALREADY_REPORTED)
+    @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
     @ExceptionHandler(DroneLimitExceededException.class)
     public Map<String, String> handleDroneLimitExceededException(DroneLimitExceededException ex) {
         Map<String, String> errorMap = new HashMap<>();

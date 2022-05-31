@@ -2,6 +2,12 @@
 server:
   port:
     8080
+  forward-headers-strategy: framework
+
+springdoc:
+  swagger-ui:
+    config-url: /Drone/v3/api-docs/swagger-config
+    url: /v3/api-docs
 
 
 spring:
@@ -21,7 +27,5 @@ spring:
       ddl-auto: update
 
 
-output:
-ansi:
-enabled: ALWAYS
+
 
